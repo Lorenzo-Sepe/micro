@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: ms-discovery
+
+server:
+    port: 8761
+
+eureka:
+  instance:
+    hostname: localhost
+    prefer-ip-address: true
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+    serviceUrl:
+      default-zone: http://${eureka.instance.hostname}:${server.port}/eureka/
+  environment: default
+
+logging:
+  level:
+    org.springframework: info
+    it.cgmconsulting.discovery: info
