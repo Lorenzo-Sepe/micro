@@ -1,0 +1,7 @@
+eureka:
+ environment: production
+
+logging:
+  level:
+    org.springframework: info
+    it.cgmconsulting.discovery: info

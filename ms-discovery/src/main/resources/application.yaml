@@ -1,4 +1,6 @@
 spring:
+  #profiles:
+  #  active: production
   application:
     name: ms-discovery
 
@@ -18,5 +20,5 @@ eureka:
 
 logging:
   level:
-    org.springframework: info
-    it.cgmconsulting.discovery: info
+    org.springframework: debug
+    it.cgmconsulting.discovery: debug
