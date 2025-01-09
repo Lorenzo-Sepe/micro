@@ -1,0 +1,29 @@
+spring:
+#profiles:
+#  active: production
+ application:
+  name: ms-tag
+
+server:
+ port: 8081
+ servlet:
+  context-path: /ms-tag
+ compression:
+  enabled: true
+  mime-types: application/json,text/plain
+  min-response-size: 2048
+
+eureka:
+ instance:
+  hostname: localhost
+  prefer-ip-address: true
+ client:
+  registerWithEureka: true
+  serviceUrl:
+   default-zone: http://${eureka.instance.hostname}:8761/eureka/
+ environment: default
+
+logging:
+ level:
+  org.springframework: debug
+  it.cgmconsulting.tag: debug
