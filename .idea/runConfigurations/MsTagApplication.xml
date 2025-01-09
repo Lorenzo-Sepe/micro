@@ -2,7 +2,7 @@
   <configuration default="false" name="MsTagApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
     <envs>
       <env name="DB_HOSTNAME" value="127.0.0.1" />
-      <env name="DB_NAME" value="mstag" />
+      <env name="DB_NAME" value="ms-tag" />
       <env name="DB_PASSWORD" value="mysqlDocker" />
       <env name="DB_PORT" value="3306" />
       <env name="DB_USERNAME" value="root" />
