@@ -1,16 +1,16 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="MsTagApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+  <configuration default="false" name="MsAuthApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
     <envs>
       <env name="DB_HOSTNAME" value="127.0.0.1" />
-      <env name="DB_NAME" value="ms-tag" />
+      <env name="DB_NAME" value="ms-auth" />
       <env name="DB_PASSWORD" value="mysqlDocker" />
       <env name="DB_PORT" value="3306" />
       <env name="DB_USERNAME" value="root" />
       <env name="DB_VENDOR" value="mysql" />
       <env name="JWT_SECRET_KEY" value="7q3Ze4284w2B4fy250g55c68o6pk970n37j3d76397924b2v6452m48404d63u1" />
     </envs>
-    <module name="ms-tag" />
-    <option name="SPRING_BOOT_MAIN_CLASS" value="it.cgmconsulting.tag.MsTagApplication" />
+    <module name="ms-auth" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="it.cgmconsulting.auth.MsAuthApplication" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>
