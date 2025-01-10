@@ -33,7 +33,7 @@ public class TagController {
     }
 
     @GetMapping("/tags")
-    public ResponseEntity<Set<TagDto>> getVisibleTags(){
+    public ResponseEntity<Set<String>> getVisibleTags(){
         return ResponseEntity.ok(tagService.getVisibleTags());
     }
 }

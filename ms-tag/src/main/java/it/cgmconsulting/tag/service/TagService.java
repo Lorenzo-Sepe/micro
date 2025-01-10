@@ -44,7 +44,7 @@ public class TagService {
     }
 
     @Cacheable("visible-tags")
-    public Set<TagDto> getVisibleTags(){
+    public Set<String> getVisibleTags(){
         return tagRepository.getVisibleTags();
     }
 
