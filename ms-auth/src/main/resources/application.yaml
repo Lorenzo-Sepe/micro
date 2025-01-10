@@ -49,7 +49,7 @@ eureka:
 logging:
   level:
     org.springframework: info
-    it.cgmconsulting.tag: info
+    it.cgmconsulting.auth: info
     org.hibernate.orm.jdbc.bind: trace
 
 management:

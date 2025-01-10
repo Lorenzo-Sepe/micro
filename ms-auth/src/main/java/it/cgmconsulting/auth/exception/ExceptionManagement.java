@@ -1,4 +1,4 @@
-package it.cgmconsulting.tag.exception;
+package it.cgmconsulting.auth.exception;
 
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
