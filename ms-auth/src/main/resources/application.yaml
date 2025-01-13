@@ -75,4 +75,12 @@ info:
     description: "@project.description@"
     version: "@project.version@"
 
+# CUSTOM PROPERTIES
+application:
+  security:
+    jwt:
+      secret-key: ${JWT_SECRET_KEY}
+      # 4 ORE in millisecondi
+      expiration: 14400000
+
 
