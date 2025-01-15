@@ -25,6 +25,11 @@ public class ExceptionManagement {
         return new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler({UnauthorizedException.class})
+    public ResponseEntity<String> unauthorizedExceptionManagement(UnauthorizedException ex){
+        return new ResponseEntity<String>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
+
     @ExceptionHandler({IllegalArgumentException.class})
     public ResponseEntity<String> illegalArgumentExceptionManagement(IllegalArgumentException ex){
         return new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);

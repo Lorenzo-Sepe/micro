@@ -8,6 +8,30 @@ eureka:
     register-with-eureka: true
     service-url:
       default-zone: http://${eureka.instance.hostname}:8761/eureka/
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: health,info,tracing
+  info:
+    java:
+      enabled: true
+    os:
+      enabled: true
+    env:
+      enabled: true
+  # ZIPKIN
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
+  tracing:
+    enabled: true
+    sampling:
+      probability: 0.1
+
 
 logging:
   level:
@@ -20,7 +44,6 @@ server:
 spring:
   application:
     name: ms-gateway
-
   cloud:
     gateway:
       mvc:

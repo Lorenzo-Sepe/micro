@@ -12,6 +12,7 @@ public class RouteValidator {
     // R2  -> WRITER
     // R3  -> MEMBER
     // R4  -> MODERATOR
+    // R99 -> SAURON (alias super admin)
 
 
     public boolean isOpenEndpoint(ServerHttpRequest req){

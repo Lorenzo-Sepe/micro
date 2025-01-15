@@ -54,7 +54,8 @@ public class AuthenticationFilter implements GatewayFilter{
                     (jwtUser.getRole().contains("ADMIN") && request.getURI().getPath().contains("/R1/")) ||
                     (jwtUser.getRole().contains("WRITER") && request.getURI().getPath().contains("/R2/")) ||
                     (jwtUser.getRole().contains("MEMBER") && request.getURI().getPath().contains("/R3/")) ||
-                    (jwtUser.getRole().contains("MODERATOR") && request.getURI().getPath().contains("/R4/"))
+                    (jwtUser.getRole().contains("MODERATOR") && request.getURI().getPath().contains("/R4/")) ||
+                    (jwtUser.getRole().contains("SAURON") && request.getURI().getPath().contains("/R99/"))
             )
                 populateRequestWithNewHeader(exchange, jwtUser);
             else
