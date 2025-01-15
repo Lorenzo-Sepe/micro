@@ -18,36 +18,38 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
-    public String signup(SignUpDto request) {
-        if( userRepository.existsByUsernameOrEmail(request.username(), request.email()) )
+    public String signup(SignUpDto request){
+        if(userRepository.existsByUsernameOrEmail(request.username(), request.email()))
             throw new ConflictException("Username or email already in use");
+
         User user = User.builder()
                 .username(request.username())
                 .email(request.email())
-                .createdAt(LocalDateTime.now())
                 .password(passwordEncoder.encode(request.password()))
-                .role(Role.MEMBER)
                 .enabled(true)
+                .createdAt(LocalDateTime.now())
+                .role(Role.MEMBER)
                 .build();
         userRepository.save(user);
         return "User successfully registered";
     }
 
-    public JwtAuthenticationDto signin(SignInDto request) {
-        User user = userRepository.findByUsername(request.username())
-                .orElseThrow(() -> new BadRequestException("Wrong credentials"));
+    public JwtAuthenticationDto signin(SignInDto request){
+        User user = userRepository.getUserByUsername(request.username())
+                .orElseThrow(()-> new BadRequestException("Wrong credentials"));
         if(!passwordEncoder.matches(request.password(), user.getPassword()))
             throw new BadRequestException("Wrong credentials");
 
-        JwtAuthenticationDto loggedUser= JwtAuthenticationDto.builder()
+        JwtAuthenticationDto loggedUser = JwtAuthenticationDto.builder()
                 .id(user.getId())
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .role(user.getRole().name())
-                .token("token")
+                .token(jwtService.generateToken(user))
                 .build();
         return loggedUser;
     }

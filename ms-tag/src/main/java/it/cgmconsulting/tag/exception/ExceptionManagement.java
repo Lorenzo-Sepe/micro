@@ -17,7 +17,7 @@ public class ExceptionManagement {
 
     @ExceptionHandler({ConflictException.class})
     public ResponseEntity<String> conflictExceptionManagement(ConflictException ex){
-        return new ResponseEntity<String>(ex.getMessage(), HttpStatus.CONFLICT);
+        return new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({SQLIntegrityConstraintViolationException.class})

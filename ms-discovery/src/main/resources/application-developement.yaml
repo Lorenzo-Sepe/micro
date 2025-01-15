@@ -1,0 +1,8 @@
+eureka:
+  environment: developement
+
+logging:
+  level:
+    org.springframework: trace
+    it.cgmconsulting.discovery: trace
+

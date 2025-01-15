@@ -11,7 +11,7 @@ spring:
     hibernate:
       ddl-auto: update
         # create-drop: crea tabelle all'avvio dell'applicazione e le distugge quando la stoppo
-      # validated: confronta le entità del progetto con le tabelle del db: se ci sono anomalie, solleva eccezione
+        # validated: confronta le entità del progetto con le tabelle del db: se ci sono anomalie, solleva eccezione
       # none: da usare in ambiente di produzione: non viene riportata alcuna modifica al db
       # update: aggiorna il db con le tabelle/colonne nuove; non elimina colonne che non hanno più corrispondenza con l'entità
     properties:

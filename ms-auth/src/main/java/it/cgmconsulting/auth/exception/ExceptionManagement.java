@@ -20,8 +20,8 @@ public class ExceptionManagement {
         return new ResponseEntity<String>(ex.getMessage(), HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler({SQLIntegrityConstraintViolationException.class})
-    public ResponseEntity<String> SQLIntegrityConstraintViolationExceptionManagement(SQLIntegrityConstraintViolationException ex){
+    @ExceptionHandler({BadRequestException.class})
+    public ResponseEntity<String> badRequestExceptionManagement(BadRequestException ex){
         return new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 

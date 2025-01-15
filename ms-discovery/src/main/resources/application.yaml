@@ -1,24 +1,23 @@
 spring:
-  #profiles:
-  #  active: production
   application:
     name: ms-discovery
 
 server:
-    port: 8761
+  port: 8761
 
 eureka:
+  environment: default
   instance:
     hostname: localhost
     prefer-ip-address: true
   client:
-    registerWithEureka: false
-    fetchRegistry: false
-    serviceUrl:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
       default-zone: http://${eureka.instance.hostname}:${server.port}/eureka/
-  environment: default
 
 logging:
   level:
     org.springframework: debug
     it.cgmconsulting.discovery: debug
+

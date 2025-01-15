@@ -15,16 +15,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class UserController {
+
     private final UserService userService;
 
-    @PostMapping("/signup")
+    @PostMapping("/R0/signup")
     public ResponseEntity<String> signup(@RequestBody @Valid SignUpDto request){
         return new ResponseEntity<String>(userService.signup(request), HttpStatus.CREATED);
     }
 
-    @PostMapping("/signin")
+    @PostMapping("/R0/signin")
     public ResponseEntity<JwtAuthenticationDto> signin(@RequestBody @Valid SignInDto request){
-        return new ResponseEntity<JwtAuthenticationDto>(userService.signin(request), HttpStatus.OK);
+        return ResponseEntity.ok(userService.signin(request));
     }
-
 }

@@ -1,14 +1,16 @@
 package it.cgmconsulting.auth.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.domain.Persistable;
 
+
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "_user")
-@Setter @Getter @Builder @AllArgsConstructor @NoArgsConstructor @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Table(name="_user")
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User implements Persistable<Integer> {
 
     @Id
@@ -16,22 +18,23 @@ public class User implements Persistable<Integer> {
     @EqualsAndHashCode.Include
     private Integer id;
 
-    @Column(unique = true,nullable = false,length = 20)
-    private String username;
-
-    @Column(unique = true,nullable = false)
+    @Column(unique = true, nullable = false)
     private String email;
 
+    @Column(unique = true, nullable = false, length = 20)
+    private String username;
+
+    @JsonIgnore
     @Column(nullable = false)
     private String password;
 
-    private boolean enabled; //true di default
+    private boolean enabled; // di default a true
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false,length = 9)
+    @Column(length = 9, nullable = false)
     private Role role;
 
-    @Column(updatable = false,nullable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
@@ -43,7 +46,4 @@ public class User implements Persistable<Integer> {
     public boolean isNew() {
         return isNew;
     }
-
-
-
 }
