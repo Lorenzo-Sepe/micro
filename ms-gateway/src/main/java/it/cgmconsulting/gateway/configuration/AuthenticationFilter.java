@@ -2,14 +2,16 @@ package it.cgmconsulting.gateway.configuration;
 
 import it.cgmconsulting.gateway.service.JWTService;
 import it.cgmconsulting.gateway.service.JwtUser;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.*;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
@@ -19,6 +21,9 @@ public class AuthenticationFilter implements GatewayFilter{
 
     private final RouteValidator routeValidator;
     private final JWTService jwtService;
+
+    @Value("${application.security.internalToken}")
+    private String internalToken;
 
     public AuthenticationFilter(RouteValidator routeValidator, JWTService jwtService) {
         this.routeValidator = routeValidator;
@@ -30,13 +35,27 @@ public class AuthenticationFilter implements GatewayFilter{
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain){
         ServerHttpRequest request = exchange.getRequest();
 
+        try{
+            System.out.println("Auth Internal:" + request.getHeaders().getOrEmpty("Authorization-Internal").get(0));
+        } catch(IndexOutOfBoundsException e){
+            System.out.println("Auth Internal: no");
+        }
+        try{
+            System.out.println("Auth Internal:" + request.getHeaders().getOrEmpty("Authorization").get(0));
+        } catch(IndexOutOfBoundsException e){
+            System.out.println("Auth jwt: no");
+        }
+
         // verifico se l'endpoint richiede il token
         if(routeValidator.isOpenEndpoint(request))
             exchange.getResponse().setStatusCode(HttpStatus.OK);
-        else {
+        else if (request.getHeaders().containsKey("Authorization-Internal")
+                && request.getHeaders().getOrEmpty("Authorization-Internal").get(0).equals(internalToken)) {
+                exchange.getResponse().setStatusCode(HttpStatus.OK);
+        } else {
             // Se per la request è richiesto il token ma nell'header non compare la chiave 'Authorization', blocco tutto perchè significa che il token è mancante
             if(!isAuthMissing(request))
-                return this.setCustomResponse(exchange, "Authorization header is missing in request", HttpStatus.UNAUTHORIZED);
+                return this.setCustomResponse(exchange, "Authorization header is missing in request.", HttpStatus.UNAUTHORIZED);
             // estraggo il token dall'header
             String jwt = getJwtFromRequest(request);
             // se il token è null, blocco tutto
@@ -46,6 +65,8 @@ public class AuthenticationFilter implements GatewayFilter{
             JwtUser jwtUser;
             try{
                 jwtUser = jwtService.extractJwtUSer(jwt);
+                if(!isUserEnabled(Integer.valueOf(jwtUser.getId())))
+                    throw new Exception();
             } catch (Exception e) {
                 return this.setCustomResponse(exchange, e.getMessage(), HttpStatus.UNAUTHORIZED);
             }
@@ -55,7 +76,9 @@ public class AuthenticationFilter implements GatewayFilter{
                     (jwtUser.getRole().contains("WRITER") && request.getURI().getPath().contains("/R2/")) ||
                     (jwtUser.getRole().contains("MEMBER") && request.getURI().getPath().contains("/R3/")) ||
                     (jwtUser.getRole().contains("MODERATOR") && request.getURI().getPath().contains("/R4/")) ||
-                    (jwtUser.getRole().contains("SAURON") && request.getURI().getPath().contains("/R99/"))
+                    (jwtUser.getRole().contains("SAURON") && request.getURI().getPath().contains("/R99/")) ||
+                    (request.getURI().getPath().contains("/RA/")) ||
+                    (request.getURI().getPath().contains("/RI/"))
             )
                 populateRequestWithNewHeader(exchange, jwtUser);
             else
@@ -89,6 +112,16 @@ public class AuthenticationFilter implements GatewayFilter{
         response.setStatusCode(httpStatus);
         DataBuffer buffer = response.bufferFactory().wrap(errorMsg.getBytes());
         return response.writeWith(Mono.just(buffer));
+    }
+
+    private Boolean isUserEnabled(int userId){
+        RestTemplate restemplate = new RestTemplate();
+        String uri = "http://localhost:9090/ms-auth/RI/enabled/"+userId;
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization-Internal", internalToken);
+        HttpEntity<String> entity = new HttpEntity<String>(null, headers);
+        ResponseEntity<Boolean> isEnabled = restemplate.exchange(uri, HttpMethod.GET, entity, Boolean.class);
+        return isEnabled.getBody();
     }
 }
 

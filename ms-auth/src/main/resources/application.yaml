@@ -68,12 +68,13 @@ management:
     env:
       enabled: true
   # ZIPKIN
-  otlp:
+  zipkin:
     tracing:
       endpoint: http://localhost:9411/api/v2/spans
   tracing:
+    enabled: true
     sampling:
-      probability: 0.1
+      probability: 0.95
 
 info:
   app:

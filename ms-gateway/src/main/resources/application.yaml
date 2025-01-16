@@ -8,6 +8,7 @@ eureka:
     register-with-eureka: true
     service-url:
       default-zone: http://${eureka.instance.hostname}:8761/eureka/
+
 management:
   endpoint:
     health:
@@ -30,7 +31,7 @@ management:
   tracing:
     enabled: true
     sampling:
-      probability: 0.1
+      probability: 0.95
 
 
 logging:
@@ -63,4 +64,6 @@ application:
   security:
     jwt:
       secret-key: ${JWT_SECRET_KEY}
+    # va messa come variabile d'ambiente. qui è in chiaro solo per comodità
+    internalToken: a95dbd9829fd3690e7bba2eed667c3d112e23ccf8967782662a9c92cacbdd329
 

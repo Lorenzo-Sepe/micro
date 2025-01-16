@@ -3,6 +3,7 @@ package it.cgmconsulting.auth.service;
 import it.cgmconsulting.auth.dto.JwtAuthenticationDto;
 import it.cgmconsulting.auth.dto.SignInDto;
 import it.cgmconsulting.auth.dto.SignUpDto;
+import it.cgmconsulting.auth.dto.UserProfileDto;
 import it.cgmconsulting.auth.entity.Role;
 import it.cgmconsulting.auth.entity.User;
 import it.cgmconsulting.auth.exception.BadRequestException;
@@ -75,4 +76,22 @@ public class UserService {
             throw new IllegalArgumentException("Role not present");
         }
     }
+
+    public Boolean isEnabled(int userId) {
+        return userRepository.existsById(userId);
+    }
+
+    @Transactional
+    public UserProfileDto changeUsername(int userId, String newUsername) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BadRequestException("User not found"));
+        if (userRepository.existsByUsername(newUsername)) {
+            throw new BadRequestException("Username already in use");
+        }
+        user.setUsername(newUsername);
+        user.setUpdatedAt(LocalDateTime.now());
+        return UserProfileDto.fromEntityToDto(user);
+    }
+
+
 }

@@ -8,6 +8,7 @@
       <env name="DB_USERNAME" value="root" />
       <env name="DB_VENDOR" value="mysql" />
       <env name="JWT_SECRET_KEY" value="7q3Ze4284w2B4fy250g55c68o6pk970n37j3d76397924b2v6452m48404d63u1" />
+      <env name="INTERNAL_TOKEN" value="a95dbd9829fd3690e7bba2eed667c3d112e23ccf8967782662a9c92cacbdd329" />
     </envs>
     <module name="ms-gateway" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="it.cgmconsulting.gateway.MsGatewayApplication" />

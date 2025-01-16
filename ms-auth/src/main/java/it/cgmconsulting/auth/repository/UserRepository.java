@@ -9,6 +9,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Integer> {
 
     boolean existsByUsernameOrEmail(String username, String email);
+    boolean existsByUsername(String username);
 
     @Query(value="SELECT u FROM User u WHERE u.username = :username")
     Optional<User> getUserByUsername(String username);

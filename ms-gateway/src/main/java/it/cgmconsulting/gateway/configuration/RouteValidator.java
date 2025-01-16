@@ -13,6 +13,8 @@ public class RouteValidator {
     // R3  -> MEMBER
     // R4  -> MODERATOR
     // R99 -> SAURON (alias super admin)
+    // RA  -> ALL (qualunque utente registrato a patto che il token sia valido)
+    // RI  -> Request Interne (chiamate interne all'applicazione tra microservizi)
 
 
     public boolean isOpenEndpoint(ServerHttpRequest req){
