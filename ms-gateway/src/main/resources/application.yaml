@@ -58,6 +58,10 @@ spring:
             uri: lb://ms-auth
             predicates:
               - Path=/ms-auth/**
+          - id: ms-post
+            uri: lb://ms-post
+            predicates:
+                - Path=/ms-post/**
 
 # CUSTOM PROPERTIES
 application:

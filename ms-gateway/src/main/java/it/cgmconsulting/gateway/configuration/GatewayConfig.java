@@ -23,6 +23,9 @@ public class GatewayConfig {
                 .route("ms-tag", r -> r.path("/ms-tag/**")
                         .filters(f -> f.filter(filter))
                         .uri("lb://ms-tag"))
+                .route("ms-post", r -> r.path("/ms-post/**")
+                        .filters(f -> f.filter(filter))
+                        .uri("lb://ms-post"))
                 .build();
     }
 

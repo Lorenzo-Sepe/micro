@@ -1,0 +1,87 @@
+spring:
+  application:
+    name: ms-post
+  datasource:
+    url: jdbc:${DB_VENDOR}://${DB_HOSTNAME}:${DB_PORT}/${DB_NAME}?ssl-mode=REQUIRED
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+        # create-drop: crea tabelle all'avvio dell'applicazione e le distugge quando la stoppo
+        # validated: confronta le entità del progetto con le tabelle del db: se ci sono anomalie, solleva eccezione
+      # none: da usare in ambiente di produzione: non viene riportata alcuna modifica al db
+      # update: aggiorna il db con le tabelle/colonne nuove; non elimina colonne che non hanno più corrispondenza con l'entità
+    properties:
+      dialect: org.hibernate.dialect.MySQLDialect
+      hibernate:
+        format_sql: true
+    show-sql: true
+    open-in-view: false
+    defer-datasource-initialization: true
+
+  # all'avvio dell'applicazione viene eseguito data.sql presente in resource
+  sql.init.mode: never
+
+server:
+  port: 0
+  servlet:
+    context-path: /ms-post
+  compression:
+    enabled: true
+    min-response-size: 2048
+    mime-types: text/plain,application/json
+
+
+eureka:
+  instance:
+    hostname: localhost
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 30
+    lease-expiration-duration-in-seconds: 61
+  client:
+    register-with-eureka: true
+    service-url:
+      default-zone: http://${eureka.instance.hostname}:8761/eureka/
+
+logging:
+  level:
+    org.springframework: info
+    it.cgmconsulting.post: info
+    org.hibernate.orm.jdbc.bind: trace
+
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  info:
+    java:
+      enabled: true
+    os:
+      enabled: true
+    env:
+      enabled: true
+  # ZIPKIN
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
+  tracing:
+    enabled: true
+    sampling:
+      probability: 0.95
+
+info:
+  app:
+    # valori recuperati dal pom.xml
+    name: "@project.name@"
+    description: "@project.description@"
+    version: "@project.version@"
+
+
+
