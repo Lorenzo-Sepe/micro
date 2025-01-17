@@ -1,18 +1,12 @@
 package it.cgmconsulting.post.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Section {
 
     @Id
@@ -20,14 +14,20 @@ public class Section {
     @EqualsAndHashCode.Include
     private Integer id;
 
-    @Column(nullable = false,length = 100)
+    @Column(nullable = false, length = 100)
     private String sectionTitle;
 
-    @Column(nullable = false,length = 2000)
+    @Column(nullable = false, length = 2000)
     private String sectionContent;
 
-    private byte prg; //progessivo per odinare
+    private byte prg; // progressivo per ordinare le sezioni
 
-    @ManyToOne(fetch= FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
     private Post post;
+
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 }

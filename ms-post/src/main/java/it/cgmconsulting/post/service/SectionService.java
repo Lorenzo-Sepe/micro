@@ -9,6 +9,4 @@ import org.springframework.stereotype.Service;
 public class SectionService {
 
     private final SectionRepository sectionRepository;
-
-
 }

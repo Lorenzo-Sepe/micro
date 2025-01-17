@@ -12,7 +12,7 @@
 	<artifactId>ms-post</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>ms-post</name>
-	<description>Microservizio per  creare post in un blog</description>
+	<description>Post Microservice</description>
 	<url/>
 	<licenses>
 		<license/>

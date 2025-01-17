@@ -1,32 +1,17 @@
 package it.cgmconsulting.post.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import org.hibernate.validator.constraints.Range;
 
-@RequiredArgsConstructor @Data @AllArgsConstructor
+@Getter
 public class SectionRequestDto {
+
+    @NotBlank @Size(max = 100, min = 1)
     private String sectionTitle;
+    @NotBlank @Size(max = 2000, min = 10)
     private String sectionContent;
+    @Range(min = 1, max = Byte.MAX_VALUE)
     private byte prg;
-
 }
-
-/*
-* @Data @NoArgsConstructor @AllArgsConstructor @Builder
-public class UserProfileDto {
-
-    private int id;
-    private String username;
-    private String email;
-    private LocalDateTime createdAt;
-
-    public static UserProfileDto fromEntityToDto(User user){
-        return UserProfileDto.builder()
-                .id(user.getId())
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .createdAt(user.getCreatedAt())
-                .build();
-    }
-}*/

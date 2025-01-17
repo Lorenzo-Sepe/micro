@@ -36,8 +36,8 @@ management:
 
 logging:
   level:
-    org.springframework: info
-    it.cgmconsulting.gateway: info
+    org.springframework: debug
+    it.cgmconsulting.gateway: debug
 
 server:
   port: 9090
@@ -61,7 +61,7 @@ spring:
           - id: ms-post
             uri: lb://ms-post
             predicates:
-                - Path=/ms-post/**
+              - Path=/ms-post/**
 
 # CUSTOM PROPERTIES
 application:

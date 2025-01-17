@@ -9,6 +9,7 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.*;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
@@ -63,13 +64,16 @@ public class AuthenticationFilter implements GatewayFilter{
                 return this.setCustomResponse(exchange, "Invalid token", HttpStatus.UNAUTHORIZED);
             // estraggo i claims dal token: se l'operazione non riesce viene sollevata un'eccezione e blocco tutto
             JwtUser jwtUser;
+            jwtUser = jwtService.extractJwtUSer(jwt);
+            /*
             try{
                 jwtUser = jwtService.extractJwtUSer(jwt);
-                if(!isUserEnabled(Integer.valueOf(jwtUser.getId())))
+                if(isUserEnabled(Integer.valueOf(jwtUser.getId())).equals(false))
                     throw new Exception();
             } catch (Exception e) {
                 return this.setCustomResponse(exchange, e.getMessage(), HttpStatus.UNAUTHORIZED);
             }
+            */
 
             if(
                     (jwtUser.getRole().contains("ADMIN") && request.getURI().getPath().contains("/R1/")) ||
@@ -113,6 +117,7 @@ public class AuthenticationFilter implements GatewayFilter{
         DataBuffer buffer = response.bufferFactory().wrap(errorMsg.getBytes());
         return response.writeWith(Mono.just(buffer));
     }
+
 
     private Boolean isUserEnabled(int userId){
         RestTemplate restemplate = new RestTemplate();
