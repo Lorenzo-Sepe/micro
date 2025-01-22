@@ -7,14 +7,17 @@ import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.*;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClient;
+
+import java.time.Duration;
 
 
 @Component
@@ -65,29 +68,29 @@ public class AuthenticationFilter implements GatewayFilter{
             // estraggo i claims dal token: se l'operazione non riesce viene sollevata un'eccezione e blocco tutto
             JwtUser jwtUser;
             jwtUser = jwtService.extractJwtUSer(jwt);
-            /*
-            try{
-                jwtUser = jwtService.extractJwtUSer(jwt);
-                if(isUserEnabled(Integer.valueOf(jwtUser.getId())).equals(false))
-                    throw new Exception();
-            } catch (Exception e) {
-                return this.setCustomResponse(exchange, e.getMessage(), HttpStatus.UNAUTHORIZED);
-            }
-            */
 
-            if(
-                    (jwtUser.getRole().contains("ADMIN") && request.getURI().getPath().contains("/R1/")) ||
-                    (jwtUser.getRole().contains("WRITER") && request.getURI().getPath().contains("/R2/")) ||
-                    (jwtUser.getRole().contains("MEMBER") && request.getURI().getPath().contains("/R3/")) ||
-                    (jwtUser.getRole().contains("MODERATOR") && request.getURI().getPath().contains("/R4/")) ||
-                    (jwtUser.getRole().contains("SAURON") && request.getURI().getPath().contains("/R99/")) ||
-                    (request.getURI().getPath().contains("/RA/")) ||
-                    (request.getURI().getPath().contains("/RI/"))
-            )
-                populateRequestWithNewHeader(exchange, jwtUser);
-            else
-                return this.setCustomResponse(exchange, "Invalid authorization", HttpStatus.UNAUTHORIZED);
-
+            // Verifico che l'utente sia abilitato nel caso venga disabilitato dopo il login
+            return isUserEnabled(Integer.parseInt(jwtUser.getId()))
+                .flatMap(isEnabled -> {
+                    if (!isEnabled) {
+                        return this.setCustomResponse(exchange, "User is not enabled", HttpStatus.UNAUTHORIZED);
+                    }
+                    // Procediamo con il resto del filtro se l'utente è abilitato
+                    if(
+                        (jwtUser.getRole().contains("ADMIN") && request.getURI().getPath().contains("/R1/")) ||
+                        (jwtUser.getRole().contains("WRITER") && request.getURI().getPath().contains("/R2/")) ||
+                        (jwtUser.getRole().contains("MEMBER") && request.getURI().getPath().contains("/R3/")) ||
+                        (jwtUser.getRole().contains("MODERATOR") && request.getURI().getPath().contains("/R4/")) ||
+                        (jwtUser.getRole().contains("SAURON") && request.getURI().getPath().contains("/R99/")) ||
+                        (request.getURI().getPath().contains("/RA/")) ||
+                        (request.getURI().getPath().contains("/RI/"))
+                    ) {
+                        populateRequestWithNewHeader(exchange, jwtUser);
+                        return chain.filter(exchange);
+                    } else {
+                        return this.setCustomResponse(exchange, "Invalid authorization", HttpStatus.UNAUTHORIZED);
+                    }
+                });
         }
         return chain.filter(exchange);
     }
@@ -119,14 +122,19 @@ public class AuthenticationFilter implements GatewayFilter{
     }
 
 
-    private Boolean isUserEnabled(int userId){
-        RestTemplate restemplate = new RestTemplate();
-        String uri = "http://localhost:9090/ms-auth/RI/enabled/"+userId;
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization-Internal", internalToken);
-        HttpEntity<String> entity = new HttpEntity<String>(null, headers);
-        ResponseEntity<Boolean> isEnabled = restemplate.exchange(uri, HttpMethod.GET, entity, Boolean.class);
-        return isEnabled.getBody();
+    private final WebClient webClient = WebClient.builder()
+            .baseUrl("http://localhost:9090")
+            .clientConnector(new ReactorClientHttpConnector(HttpClient.create()
+                    .responseTimeout(Duration.ofSeconds(5))))
+            .build();
+
+    private Mono<Boolean> isUserEnabled(int userId) {
+        return webClient
+                .get()
+                .uri("/ms-auth/RI/enabled/{userId}", userId)
+                .header("Authorization-Internal", internalToken)
+                .retrieve()
+                .bodyToMono(Boolean.class);
     }
 }
 

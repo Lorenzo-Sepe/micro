@@ -78,7 +78,7 @@ public class UserService {
     }
 
     public Boolean isEnabled(int userId) {
-        return userRepository.existsByIdAndEnabledTrue(userId);
+        return userRepository.isEnbled(userId);
     }
 
     @Transactional

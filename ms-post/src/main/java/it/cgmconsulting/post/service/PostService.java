@@ -25,14 +25,16 @@ public class PostService {
 
     @Transactional
     public PostResponseDto updatePost(PostRequestDto request, String author, int postId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
+        Post post = findPost(postId);
         post.setTitle(request.getTitle());
         post.setAuthor(author);
         post.setUpdatedAt(LocalDateTime.now());
         post.setPublicationDate(null);
         return PostResponseDto.fromEntityToDto(post);
-
     }
 
+    protected Post findPost(int postId){
+        return postRepository.findById(postId)
+                .orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
+    }
 }
