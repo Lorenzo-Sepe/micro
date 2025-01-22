@@ -31,10 +31,16 @@ public class PostService {
         post.setUpdatedAt(LocalDateTime.now());
         post.setPublicationDate(null);
         return PostResponseDto.fromEntityToDto(post);
+
     }
 
-    protected Post findPost(int postId){
-        return postRepository.findById(postId)
-                .orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
+    protected Post findPost(int id){
+        return postRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
     }
+
+
+
+
+
 }

@@ -22,7 +22,7 @@ public class Section {
 
     private byte prg; // progressivo per ordinare le sezioni
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(nullable = false)
     private Post post;
 

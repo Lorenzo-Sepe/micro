@@ -10,8 +10,11 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     boolean existsByUsernameOrEmail(String username, String email);
     boolean existsByUsername(String username);
-    boolean isEnbled(int useId);
-    boolean existsByIdAndEnabledTrue(int id);
+
+    //boolean existsByIdAndEnabledTrue(int id);
+
+    @Query("SELECT u.enabled FROM User u WHERE u.id = :id")
+    boolean isEnabled(int id);
 
     @Query(value="SELECT u FROM User u WHERE u.username = :username")
     Optional<User> getUserByUsername(String username);

@@ -46,6 +46,8 @@ public class UserService {
                 .orElseThrow(()-> new BadRequestException("Wrong credentials"));
         if(!passwordEncoder.matches(request.password(), user.getPassword()))
             throw new BadRequestException("Wrong credentials");
+        if(!user.isEnabled())
+            throw new UnauthorizedException("User disabled");
 
         JwtAuthenticationDto loggedUser = JwtAuthenticationDto.builder()
                 .id(user.getId())
@@ -78,7 +80,8 @@ public class UserService {
     }
 
     public Boolean isEnabled(int userId) {
-        return userRepository.isEnbled(userId);
+        //return userRepository.existsByIdAndEnabledTrue(userId);
+        return userRepository.isEnabled(userId);
     }
 
     @Transactional
