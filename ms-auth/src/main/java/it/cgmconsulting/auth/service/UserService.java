@@ -8,6 +8,7 @@ import it.cgmconsulting.auth.entity.Role;
 import it.cgmconsulting.auth.entity.User;
 import it.cgmconsulting.auth.exception.BadRequestException;
 import it.cgmconsulting.auth.exception.ConflictException;
+import it.cgmconsulting.auth.exception.InternalServerErrorException;
 import it.cgmconsulting.auth.exception.UnauthorizedException;
 import it.cgmconsulting.auth.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -24,6 +25,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final CircuitBreakerService circuitBreakerService;
 
     public String signup(SignUpDto request){
         if(userRepository.existsByUsernameOrEmail(request.username(), request.email()))
@@ -91,8 +93,15 @@ public class UserService {
         if (userRepository.existsByUsername(newUsername)) {
             throw new BadRequestException("Username already in use");
         }
+        String oldName = user.getUsername();
         user.setUsername(newUsername);
         user.setUpdatedAt(LocalDateTime.now());
+        // se l'utente è uno scrittore andiamo ad aggiornare lo username su tutti
+        // i suoi post su ms-post
+        if(user.getRole().equals(Role.WRITER)){
+            if(!circuitBreakerService.massiveUpdate(oldName, newUsername).getStatusCode().is2xxSuccessful())
+                throw new InternalServerErrorException("Error updating author posts");
+        }
         return UserProfileDto.fromEntityToDto(user);
     }
 

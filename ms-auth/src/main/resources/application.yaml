@@ -90,5 +90,6 @@ application:
       secret-key: ${JWT_SECRET_KEY}
       # 4 ORE in millisecondi
       expiration: 14400000
+    internalToken: a95dbd9829fd3690e7bba2eed667c3d112e23ccf8967782662a9c92cacbdd329
 
 

@@ -30,6 +30,11 @@ public class ExceptionManagement {
         return new ResponseEntity<String>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler({InternalServerErrorException.class})
+    public ResponseEntity<String> internalServerErrorExceptionManagement(InternalServerErrorException ex){
+        return new ResponseEntity<String>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @ExceptionHandler({IllegalArgumentException.class})
     public ResponseEntity<String> illegalArgumentExceptionManagement(IllegalArgumentException ex){
         return new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);

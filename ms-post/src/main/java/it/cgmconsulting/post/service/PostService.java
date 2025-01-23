@@ -1,21 +1,31 @@
 package it.cgmconsulting.post.service;
 
+import it.cgmconsulting.post.dto.PostDetailResponse;
 import it.cgmconsulting.post.dto.PostRequestDto;
 import it.cgmconsulting.post.dto.PostResponseDto;
+import it.cgmconsulting.post.dto.SectionResponseDto;
 import it.cgmconsulting.post.entity.Post;
 import it.cgmconsulting.post.exception.ResourceNotFoundException;
 import it.cgmconsulting.post.repository.PostRepository;
+import it.cgmconsulting.post.repository.SectionRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class PostService {
 
     private final PostRepository postRepository;
+    private final SectionRepository sectionRepository;
 
     public PostResponseDto createPost(PostRequestDto request, String author){
         Post post = new Post(request.getTitle(), LocalDateTime.now(), author);
@@ -40,7 +50,23 @@ public class PostService {
     }
 
 
+    public PostDetailResponse getPostDetail(int postId) {
+        // recupero il dto relativo al post
+        PostResponseDto postResponseDto = postRepository.getPostDetail(postId, LocalDate.now())
+                .orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
+        // recupero le sezioni legate al post in oggetto
+        List<SectionResponseDto> sections = sectionRepository.getSectionsByPost(postId);
+        // compongo e restituisco il dettaglio del post
+        return new PostDetailResponse(postResponseDto, sections);
+    }
 
+    public List<PostResponseDto> getPosts(int pageNumber, int pageSize, String sortBy, String direction) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.Direction.valueOf(direction.toUpperCase()), sortBy);
+        Page<PostResponseDto> list = postRepository.getPosts(LocalDate.now(), pageable);
+        return list.getContent();
+    }
 
-
+    public void updateAuthorUsername(String oldName, String newName) {
+        postRepository.updateAuthorUsername(oldName, newName);
+    }
 }
