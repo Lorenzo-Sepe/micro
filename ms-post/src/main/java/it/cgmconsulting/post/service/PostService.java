@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -68,5 +69,11 @@ public class PostService {
 
     public void updateAuthorUsername(String oldName, String newName) {
         postRepository.updateAuthorUsername(oldName, newName);
+    }
+
+    public Set<String> addTagsToPost(int postId, Set<String> tags) {
+        Post post = findPost(postId);
+        post.setTags(String.join(",", tags));
+        return tags;
     }
 }

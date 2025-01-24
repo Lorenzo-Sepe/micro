@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
@@ -42,6 +43,13 @@ public class PostController {
                                                           @RequestParam(defaultValue = "DESC") String direction // ASC o DESC, ordinamento ascendente o discendente
     ){
         return ResponseEntity.ok(postService.getPosts(pageNumber, pageSize, sortBy, direction));
+    }
+
+    @PostMapping("/R2/{postId}")
+    public ResponseEntity<Set<String>> addTagsToPost(
+            @PathVariable int postId,
+            @RequestParam Set<String> tags    ){
+        return ResponseEntity.ok(postService.addTagsToPost(postId, tags));
     }
 
 }

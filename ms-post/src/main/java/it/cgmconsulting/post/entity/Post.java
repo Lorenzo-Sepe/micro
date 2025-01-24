@@ -33,6 +33,8 @@ public class Post {
     @Column(nullable = false, length = 20)
     private String author;
 
+    private String tags;
+
     public Post(String title, LocalDateTime createdAt, String author) {
         this.title = title;
         this.createdAt = createdAt;

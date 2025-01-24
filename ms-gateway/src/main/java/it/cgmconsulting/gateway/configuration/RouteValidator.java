@@ -18,6 +18,7 @@ public class RouteValidator {
 
 
     public boolean isOpenEndpoint(ServerHttpRequest req){
-        return (req.getURI().getPath().contains("/R0/"));
+
+        return (req.getURI().getPath().contains("/R0/") || req.getURI().getPath().contains("actuator"));
     }
 }

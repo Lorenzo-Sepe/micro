@@ -79,6 +79,13 @@
 			<artifactId>jjwt-impl</artifactId>
 			<version>${jjwt.version}</version>
 		</dependency>
+
+		<!-- CIRCUIT BREAKER -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-jackson</artifactId>
