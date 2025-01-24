@@ -45,11 +45,17 @@ public class PostController {
         return ResponseEntity.ok(postService.getPosts(pageNumber, pageSize, sortBy, direction));
     }
 
+    // associazione post a tags
     @PostMapping("/R2/{postId}")
-    public ResponseEntity<Set<String>> addTagsToPost(
-            @PathVariable int postId,
-            @RequestParam Set<String> tags    ){
-        return ResponseEntity.ok(postService.addTagsToPost(postId, tags));
+    public ResponseEntity<Set<String>> addTagsToPost(@PathVariable int postId,
+                                                     @RequestParam Set<String> tags){
+        return new ResponseEntity<Set<String>>(postService.addTagsToPost(postId, tags), HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/RI/")
+    public ResponseEntity<Void> deleteAssociationPostsTag(@RequestParam String tag){
+        postService.deleteAssociationPostsTag(tag);
+        return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }
 
 }

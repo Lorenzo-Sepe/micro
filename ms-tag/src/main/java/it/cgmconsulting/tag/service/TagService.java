@@ -3,6 +3,7 @@ package it.cgmconsulting.tag.service;
 import it.cgmconsulting.tag.dto.TagDto;
 import it.cgmconsulting.tag.entity.Tag;
 import it.cgmconsulting.tag.exception.ConflictException;
+import it.cgmconsulting.tag.exception.InternalServerErrorException;
 import it.cgmconsulting.tag.exception.ResourceNotFoundException;
 import it.cgmconsulting.tag.repository.TagRepository;
 import jakarta.transaction.Transactional;
@@ -19,6 +20,7 @@ import java.util.Set;
 public class TagService {
 
     private final TagRepository tagRepository;
+    private final CircuitBreakerService circuitBreakerService;
 
     public String createTag(String newTag){
         if(tagRepository.existsById(newTag))
@@ -33,7 +35,14 @@ public class TagService {
     public TagDto switchTagVisibility(String id){
         Tag tag = tagRepository.findById(id)
                 .orElseThrow(()-> new ResourceNotFoundException("Tag", "id", id));
-        tag.setVisible(!tag.isVisible());
+        //tag.setVisible(!tag.isVisible());
+        if(tag.isVisible()){
+            tag.setVisible(false);
+            if(!circuitBreakerService.deleteAssociationPostsTag(tag.getId()).getStatusCode().is2xxSuccessful())
+                throw new InternalServerErrorException("Switch visibility not available now. Retry later");
+        } else {
+            tag.setVisible(true);
+        }
         tag.setUpdatedAt(LocalDateTime.now());
         return new TagDto(id, tag.isVisible());
     }

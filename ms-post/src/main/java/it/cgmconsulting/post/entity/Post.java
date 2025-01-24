@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -32,8 +33,6 @@ public class Post {
 
     @Column(nullable = false, length = 20)
     private String author;
-
-    private String tags;
 
     public Post(String title, LocalDateTime createdAt, String author) {
         this.title = title;

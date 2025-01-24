@@ -60,6 +60,11 @@
 			<version>2.10.0</version>
 			<scope>test</scope>
 		</dependency>
+		<!-- CIRCUIT BREAKER -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
+		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>

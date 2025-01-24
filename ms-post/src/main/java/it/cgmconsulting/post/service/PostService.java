@@ -5,8 +5,11 @@ import it.cgmconsulting.post.dto.PostRequestDto;
 import it.cgmconsulting.post.dto.PostResponseDto;
 import it.cgmconsulting.post.dto.SectionResponseDto;
 import it.cgmconsulting.post.entity.Post;
+import it.cgmconsulting.post.entity.PostTags;
+import it.cgmconsulting.post.entity.PostTagsId;
 import it.cgmconsulting.post.exception.ResourceNotFoundException;
 import it.cgmconsulting.post.repository.PostRepository;
+import it.cgmconsulting.post.repository.PostTagsRepository;
 import it.cgmconsulting.post.repository.SectionRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -27,6 +31,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final SectionRepository sectionRepository;
+    private final PostTagsRepository postTagsRepository;
 
     public PostResponseDto createPost(PostRequestDto request, String author){
         Post post = new Post(request.getTitle(), LocalDateTime.now(), author);
@@ -57,8 +62,10 @@ public class PostService {
                 .orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
         // recupero le sezioni legate al post in oggetto
         List<SectionResponseDto> sections = sectionRepository.getSectionsByPost(postId);
+        // recupero i tag associati al post
+        Set<String> tags = postTagsRepository.getTagsByPost(postId);
         // compongo e restituisco il dettaglio del post
-        return new PostDetailResponse(postResponseDto, sections);
+        return new PostDetailResponse(postResponseDto, sections, tags);
     }
 
     public List<PostResponseDto> getPosts(int pageNumber, int pageSize, String sortBy, String direction) {
@@ -72,8 +79,14 @@ public class PostService {
     }
 
     public Set<String> addTagsToPost(int postId, Set<String> tags) {
-        Post post = findPost(postId);
-        post.setTags(String.join(",", tags));
+        // elimino tutti i tag precedentemente aasociati al post
+        postTagsRepository.cleanTags(postId);
+        for(String t : tags)
+            postTagsRepository.addTag(t.toUpperCase(), postId);
         return tags;
+    }
+
+    public void deleteAssociationPostsTag(String tag) {
+        postTagsRepository.deleteAssociationPostsTag(tag);
     }
 }

@@ -92,10 +92,9 @@ application:
       expiration: 14400000
     internalToken: a95dbd9829fd3690e7bba2eed667c3d112e23ccf8967782662a9c92cacbdd329
 
-# CONFIGURAZIONE CIRCUIT BREAKER
 resilience4j.circuitbreaker:
   instances:
-    a-tempo: #nomi arbitrari per le istanze dei controlli
+    a-tempo: # nomi arbitrari per le istanze dei controlli
       registerHealthIndicator: true
       # Apertura del circuito se la request impiega più tempo di quanto stimato
       sliding-window-type: TIME_BASED
@@ -107,11 +106,12 @@ resilience4j.circuitbreaker:
       slow-call-duration-threshold: 2s
       # Tempo per passare dallo stato di OPEN a HALF_OPEN
       wait-duration-in-open-state: 60s
+      # numero minimo di chiamate su cui cominciare a calcolare il tasso di errore
       minimum-number-of-calls: 1
       # Numero massimo di request permesse in stato HALF_OPEN
       permitted-number-of-calls-in-half-open-state: 1
       automatic-transition-from-open-to-half-open-enabled: true
-    a-tentativi: #nome seconda istanza arbitrario
+    a-tentativi: # nome seconda istanza arbitrario
       register-health-indicator: true
       # Apertura del circuito se la request fallisce n volte
       sliding-window-type: COUNT_BASED
